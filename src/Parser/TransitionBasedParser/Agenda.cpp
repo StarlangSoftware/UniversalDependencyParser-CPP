@@ -9,6 +9,12 @@ Agenda::Agenda(int beamSize) {
     this->beamSize = beamSize;
 }
 
+/**
+ * Updates the agenda with a new state if it is better than the worst state
+ * currently in the agenda or if there is room in the agenda.
+ * @param oracle The ScoringOracle used to score the state.
+ * @param current The state to be added to the agenda.
+ */
 void Agenda::updateAgenda(ScoringOracle* oracle, const State& current) {
     if (agenda.contains(current)) {
         return;
@@ -32,6 +38,10 @@ void Agenda::updateAgenda(ScoringOracle* oracle, const State& current) {
     }
 }
 
+/**
+ * Retrieves the best state from the agenda based on the highest score.
+ * @return The state with the highest score in the agenda.
+ */
 State Agenda::best() {
     State best;
     double bestValue = INT_MAX;

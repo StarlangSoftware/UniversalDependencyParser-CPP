@@ -7,6 +7,13 @@
 
 SimpleInstanceGenerator::SimpleInstanceGenerator() = default;
 
+/**
+ * Generates an instance based on the state, window size, and command.
+ * @param state The current state of the parser, which includes the stack and word list.
+ * @param windowSize The size of the window used for feature extraction.
+ * @param command The command to be associated with the generated instance.
+ * @return The generated {@link Instance} object with attributes based on the state and command.
+ */
 Instance *SimpleInstanceGenerator::generate(const State &state, int windowSize, const string &command) {
     auto* instance = new Instance(command);
     vector<Attribute*> attributes;

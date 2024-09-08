@@ -6,6 +6,12 @@
 
 TransitionParser::TransitionParser() = default;
 
+/**
+ * Creates a new {@link UniversalDependencyTreeBankSentence} with the same words as the input sentence,
+ * but with null heads, effectively cloning the sentence structure without dependencies.
+ * @param universalDependencyTreeBankSentence the sentence to be cloned
+ * @return a new {@link UniversalDependencyTreeBankSentence} with copied words but no dependencies
+ */
 UniversalDependencyTreeBankSentence *
 TransitionParser::createResultSentence(UniversalDependencyTreeBankSentence *universalDependencyTreeBankSentence) {
     auto* sentence = new UniversalDependencyTreeBankSentence();
@@ -24,6 +30,12 @@ TransitionParser::createResultSentence(UniversalDependencyTreeBankSentence *univ
     return sentence;
 }
 
+/**
+ * Simulates parsing a corpus of sentences, returning a dataset of instances created by parsing each sentence.
+ * @param corpus the corpus to be parsed
+ * @param windowSize the size of the window used in parsing
+ * @return a {@link DataSet} containing instances from parsing each sentence in the corpus
+ */
 DataSet TransitionParser::simulateParseOnCorpus(const UniversalDependencyTreeBankCorpus& corpus, int windowSize) {
     DataSet dataSet = DataSet();
     for (int i = 0; i < corpus.sentenceCount(); i++) {
@@ -32,6 +44,11 @@ DataSet TransitionParser::simulateParseOnCorpus(const UniversalDependencyTreeBan
     return dataSet;
 }
 
+/**
+ * Checks if there are any states in the agenda that still have words to process or have more than one item in the stack.
+ * @param agenda the agenda containing the states
+ * @return true if there are states to process, false otherwise
+ */
 bool TransitionParser::checkStates(const Agenda& agenda) const{
     for (auto& iterator : agenda.agenda) {
         if (iterator.first.wordListSize() > 0 || iterator.first.stackSize() > 1) {
@@ -41,6 +58,11 @@ bool TransitionParser::checkStates(const Agenda& agenda) const{
     return false;
 }
 
+/**
+ * Initializes the parsing state with a stack containing one empty {@link StackWord} and a word list containing all words in the sentence.
+ * @param sentence the sentence to initialize the state with
+ * @return a {@link State} representing the starting point for parsing
+ */
 State TransitionParser::initialState(UniversalDependencyTreeBankSentence *sentence) {
     vector<StackWord*> wordList;
     for (int i = 0; i < sentence->wordCount(); i++) {
@@ -51,6 +73,12 @@ State TransitionParser::initialState(UniversalDependencyTreeBankSentence *senten
     return State(stack, wordList, vector<StackRelation*>());
 }
 
+/**
+ * Constructs possible parsing candidates based on the current state and transition system.
+ * @param transitionSystem the transition system used (ARC_STANDARD or ARC_EAGER)
+ * @param state the current parsing state
+ * @return a list of possible {@link Candidate} actions to be applied
+ */
 vector<Candidate *> TransitionParser::constructCandidates(TransitionSystem transitionSystem, const State &state) {
     if (state.stackSize() == 1 && state.wordListSize() == 0) {
         return vector<Candidate*>();
@@ -75,6 +103,14 @@ vector<Candidate *> TransitionParser::constructCandidates(TransitionSystem trans
     return subsets;
 }
 
+/**
+ * Performs dependency parsing with beam search to find the best parse for a given sentence.
+ * @param oracle the scoring oracle used for guiding the search
+ * @param beamSize the size of the beam for beam search
+ * @param universalDependencyTreeBankSentence the sentence to be parsed
+ * @param transitionSystem the transition system used (ARC_STANDARD or ARC_EAGER)
+ * @return the best parsing state from the beam search
+ */
 State TransitionParser::dependencyParseWithBeamSearch(ScoringOracle* oracle, int beamSize,
                                                       UniversalDependencyTreeBankSentence *universalDependencyTreeBankSentence,
                                                       TransitionSystem transitionSystem) {
@@ -97,6 +133,12 @@ State TransitionParser::dependencyParseWithBeamSearch(ScoringOracle* oracle, int
     return agenda.best();
 }
 
+/**
+ * Parses a corpus of sentences using the given oracle and returns a new corpus with the parsed sentences.
+ * @param universalDependencyTreeBankCorpus the corpus to be parsed
+ * @param oracle the oracle used for guiding the parsing process
+ * @return a {@link UniversalDependencyTreeBankCorpus} containing the parsed sentences
+ */
 UniversalDependencyTreeBankCorpus
 TransitionParser::dependencyParseCorpus(const UniversalDependencyTreeBankCorpus &universalDependencyTreeBankCorpus,
                                         Oracle* oracle) {

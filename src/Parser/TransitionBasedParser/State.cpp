@@ -4,6 +4,13 @@
 
 #include "State.h"
 
+/**
+ * Constructs a State object with given stack, wordList, and relations.
+ *
+ * @param stack     The stack of words in the parser state.
+ * @param wordList  The list of words to be processed.
+ * @param relations The relations established between words.
+ */
 State::State(const vector<StackWord*> &stack, const vector<StackWord*> &wordList,
              const vector<StackRelation*>& relations) {
     this->stack = stack;
@@ -13,6 +20,10 @@ State::State(const vector<StackWord*> &stack, const vector<StackWord*> &wordList
 
 State::State()= default;
 
+/**
+ * Applies the SHIFT operation to the parser state.
+ * Moves the first word from the wordList to the stack.
+ */
 void State::applyShift() {
     if (!wordList.empty()) {
         StackWord* word = wordList.at(0);
@@ -21,6 +32,12 @@ void State::applyShift() {
     }
 }
 
+/**
+ * Applies the LEFTARC operation to the parser state.
+ * Creates a relation from the second-to-top stack element to the top stack element
+ * and then removes the second-to-top element from the stack.
+ * @param type The type of the dependency relation.
+ */
 void State::applyLeftArc(UniversalDependencyType type) {
     if (stack.size() > 1) {
         UniversalDependencyTreeBankWord* beforeLast = stack[stack.size() - 2]->getWord();
@@ -32,6 +49,13 @@ void State::applyLeftArc(UniversalDependencyType type) {
     }
 }
 
+/**
+ * Applies the RIGHTARC operation to the parser state.
+ * Creates a relation from the top stack element to the second-to-top stack element
+ * and then removes the top element from the stack.
+ *
+ * @param type The type of the dependency relation.
+ */
 void State::applyRightArc(UniversalDependencyType type) {
     if (stack.size() > 1) {
         UniversalDependencyTreeBankWord* last = stack[stack.size() - 1]->getWord();
@@ -42,6 +66,13 @@ void State::applyRightArc(UniversalDependencyType type) {
     }
 }
 
+/**
+ * Applies the ARC_EAGER_LEFTARC operation to the parser state.
+ * Creates a relation from the last element of the stack to the first element of the wordList
+ * and then removes the top element from the stack.
+ *
+ * @param type The type of the dependency relation.
+ */
 void State::applyArcEagerLeftArc(UniversalDependencyType type) {
     if (!stack.empty() && !wordList.empty()) {
         UniversalDependencyTreeBankWord* lastElementOfStack = stack[stack.size() - 1]->getWord();
@@ -67,12 +98,23 @@ void State::applyArcEagerRightArc(UniversalDependencyType type) {
     }
 }
 
+/**
+ * Applies the REDUCE operation to the parser state.
+ * Removes the top element from the stack.
+ */
 void State::applyReduce() {
     if (!stack.empty()) {
         stack.pop_back();
     }
 }
 
+/**
+ * Applies a specific command based on the transition system.
+ *
+ * @param command The command to be applied (e.g., SHIFT, LEFTARC, RIGHTARC, REDUCE).
+ * @param type The type of dependency relation, relevant for ARC operations.
+ * @param transitionSystem The transition system (e.g., ARC_STANDARD, ARC_EAGER) that determines which command to apply.
+ */
 void State::apply(Command command, UniversalDependencyType type, TransitionSystem transitionSystem) {
     switch (transitionSystem) {
         case TransitionSystem::ARC_STANDARD:
@@ -113,18 +155,35 @@ void State::apply(Command command, UniversalDependencyType type, TransitionSyste
     }
 }
 
+/**
+ * Returns the number of relations established in the current state.
+ * @return The size of the relations list.
+ */
 int State::relationSize() const{
     return relations.size();
 }
 
+/**
+ * Returns the number of words remaining in the wordList.
+ * @return The size of the wordList.
+ */
 int State::wordListSize() const{
     return wordList.size();
 }
 
+/**
+ * Returns the number of words currently in the stack.
+ * @return The size of the stack.
+ */
 int State::stackSize() const{
     return stack.size();
 }
 
+/**
+ * Retrieves a specific word from the stack based on its position.
+ * @param index The position of the word in the stack.
+ * @return The word at the specified position, or null if the index is out of bounds.
+ */
 UniversalDependencyTreeBankWord *State::getStackWord(int index) const{
     int size = stack.size() - 1;
     if (size - index < 0) {
@@ -133,6 +192,10 @@ UniversalDependencyTreeBankWord *State::getStackWord(int index) const{
     return stack[size - index]->getWord();
 }
 
+/**
+ * Retrieves the top word from the stack.
+ * @return The top word of the stack, or null if the stack is empty.
+ */
 UniversalDependencyTreeBankWord *State::getPeek() const{
     if (!stack.empty()) {
         return stack[stack.size() - 1]->getWord();
@@ -140,6 +203,11 @@ UniversalDependencyTreeBankWord *State::getPeek() const{
     return nullptr;
 }
 
+/**
+ * Retrieves a specific word from the wordList based on its position.
+ * @param index The position of the word in the wordList.
+ * @return The word at the specified position, or null if the index is out of bounds.
+ */
 UniversalDependencyTreeBankWord *State::getWordListWord(int index) const{
     if (index > wordList.size() - 1) {
         return nullptr;
@@ -147,6 +215,11 @@ UniversalDependencyTreeBankWord *State::getWordListWord(int index) const{
     return wordList[index]->getWord();
 }
 
+/**
+ * Retrieves a specific relation based on its index.
+ * @param index The position of the relation in the relations list.
+ * @return The relation at the specified position, or null if the index is out of bounds.
+ */
 StackRelation *State::getRelation(int index) const{
     if (index < relations.size()) {
         return relations[index];

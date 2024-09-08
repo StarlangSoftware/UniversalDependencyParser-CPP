@@ -5,6 +5,12 @@
 #include "InstanceGenerator.h"
 #include "Attribute/DiscreteIndexedAttribute.h"
 
+/**
+ * Adds an attribute for a specific feature type of a given word to the list of attributes.
+ * @param word The word whose feature value is used to create the attribute.
+ * @param attributes The list of attributes to which the new attribute will be added.
+ * @param featureType The type of the feature to be extracted from the word.
+ */
 void
 InstanceGenerator::addAttributeForFeatureType(UniversalDependencyTreeBankWord* word, vector<Attribute*>& attributes,
                                               const string &featureType) {
@@ -17,6 +23,11 @@ InstanceGenerator::addAttributeForFeatureType(UniversalDependencyTreeBankWord* w
     }
 }
 
+/**
+ * Adds a set of default (empty) attributes to the list of attributes. These attributes represent
+ * various feature types with default "null" values.
+ * @param attributes The list of attributes to which the default attributes will be added.
+ */
 void InstanceGenerator::addEmptyAttributes(vector<Attribute *>& attributes) {
     attributes.emplace_back(new DiscreteIndexedAttribute("null", 0, UniversalDependencyTreeBankFeatures::numberOfValues("tr", "PronType") + 1));
     attributes.emplace_back(new DiscreteIndexedAttribute("null", 0, UniversalDependencyTreeBankFeatures::numberOfValues("tr", "NumType") + 1));
@@ -34,6 +45,11 @@ void InstanceGenerator::addEmptyAttributes(vector<Attribute *>& attributes) {
     attributes.emplace_back(new DiscreteIndexedAttribute("null", 0, UniversalDependencyTreeBankFeatures::numberOfValues("tr", "Person") + 1));
 }
 
+/**
+ * Adds attributes for various feature types of a given word to the list of attributes.
+ * @param word The word whose feature values are used to create the attributes.
+ * @param attributes The list of attributes to which the new attributes will be added.
+ */
 void InstanceGenerator::addFeatureAttributes(UniversalDependencyTreeBankWord* word, vector<Attribute*>& attributes) {
     addAttributeForFeatureType(word, attributes, "PronType");
     addAttributeForFeatureType(word, attributes, "NumType");

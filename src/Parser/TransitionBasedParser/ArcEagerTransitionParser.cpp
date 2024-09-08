@@ -9,6 +9,12 @@
 ArcEagerTransitionParser::ArcEagerTransitionParser() : TransitionParser(){
 }
 
+/**
+ * Simulates the parsing process for a given sentence using the Arc Eager parsing algorithm.
+ * @param sentence The sentence to be parsed.
+ * @param windowSize The size of the window used for feature generation.
+ * @return An ArrayList of {@link Instance} objects representing the parsed actions.
+ */
 vector<Instance *>
 ArcEagerTransitionParser::simulateParse(UniversalDependencyTreeBankSentence *sentence, int windowSize) {
     UniversalDependencyTreeBankWord *top, *first;
@@ -67,6 +73,12 @@ ArcEagerTransitionParser::simulateParse(UniversalDependencyTreeBankSentence *sen
     return instanceList;
 }
 
+/**
+ * Performs dependency parsing on the given sentence using the provided oracle.
+ * @param universalDependencyTreeBankSentence The sentence to be parsed.
+ * @param oracle The oracle used to make parsing decisions.
+ * @return The parsed sentence with dependency relations established.
+ */
 UniversalDependencyTreeBankSentence *
 ArcEagerTransitionParser::dependencyParse(UniversalDependencyTreeBankSentence *universalDependencyTreeBankSentence,
                                           Oracle *oracle) {

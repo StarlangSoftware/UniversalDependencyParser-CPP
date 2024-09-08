@@ -7,6 +7,11 @@
 RandomOracle::RandomOracle(const Model& model, int windowSize) : Oracle(model, windowSize){
 }
 
+/**
+ * Makes a random decision based on a uniform distribution over possible actions.
+ * @param state The current state of the parser.
+ * @return A Decision object representing the randomly chosen action.
+ */
 Decision *RandomOracle::makeDecision(const State &state) {
     int command = random() % 3;
     int relation = random() % 59;
