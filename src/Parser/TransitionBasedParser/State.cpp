@@ -3,6 +3,7 @@
 //
 
 #include "State.h"
+#include "StringUtils.h"
 
 /**
  * Constructs a State object with given stack, wordList, and relations.
@@ -42,7 +43,7 @@ void State::applyLeftArc(UniversalDependencyType type) {
     if (stack.size() > 1) {
         UniversalDependencyTreeBankWord* beforeLast = stack[stack.size() - 2]->getWord();
         int index = stack[stack.size() - 1]->getToWord();
-        string typeString = Word::replaceAll(UniversalDependencyRelation::universalDependencyTypes[static_cast<int>(type)], "_", ":");
+        string typeString = StringUtils::replaceAll(UniversalDependencyRelation::universalDependencyTypes[static_cast<int>(type)], "_", ":");
         beforeLast->setRelation(new UniversalDependencyRelation(index, typeString));
         stack.erase(stack.end() - 2);
         relations.emplace_back(new StackRelation(beforeLast, new UniversalDependencyRelation(index, typeString)));
@@ -84,7 +85,7 @@ void State::applyArcEagerLeftArc(UniversalDependencyType type) {
 }
 
 string State::typeString(UniversalDependencyType type) {
-    return Word::replaceAll(UniversalDependencyRelation::universalDependencyTypes[static_cast<int>(type)], "_", ":");
+    return StringUtils::replaceAll(UniversalDependencyRelation::universalDependencyTypes[static_cast<int>(type)], "_", ":");
 }
 
 void State::applyArcEagerRightArc(UniversalDependencyType type) {

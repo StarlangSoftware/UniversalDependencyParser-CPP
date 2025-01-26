@@ -14,7 +14,8 @@ class UniversalDependencyParserConan(ConanFile):
                 "math/1.0.0",
                 "corpus/1.0.0",
                 "data_structure/1.0.0",
-                "sampling/1.0.0"]
+                "sampling/1.0.0",
+                "util/1.0.0"]
     license = "GPL License"
     author = "Olcay Taner Yildiz olcay.yildiz@ozyegin.edu.tr"
     url = "https://github.com/StarlangSoftware/UniversalDependencyParser-CPP"
